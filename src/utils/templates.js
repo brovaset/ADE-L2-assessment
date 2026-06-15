@@ -14,10 +14,9 @@ const actionTemplates = {
  * Get recommended action for a given category
  * 
  * @param {string} category - The message category
- * @param {string} urgency - The urgency level
  * @returns {string} - Recommended next step
  */
-export function getRecommendedAction(category, urgency) {
+export function getRecommendedAction(category) {
   return actionTemplates[category] || "No recommendation available."
 }
 

@@ -31,11 +31,9 @@ export async function categorizeMessage(message) {
     });
 
     const content = response.choices[0].message.content;
-    
-    const lines = content.split('\n');
+
     let category = "Unknown";
-    let reasoning = content;
-    
+
     if (content.toLowerCase().includes('billing')) {
       category = "Billing Issue";
     } else if (content.toLowerCase().includes('technical') || content.toLowerCase().includes('bug')) {
