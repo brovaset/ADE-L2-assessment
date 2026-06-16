@@ -7,13 +7,15 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build:
     if: github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +28,9 @@ jobs:
 
       - run: npm ci
       - run: npm run build
-      - run: |
+
+      - name: Publish built files to repo root
+        run: |
           cp dist/index.html index.html
           cp dist/404.html 404.html
           rm -rf assets
@@ -37,3 +41,17 @@ jobs:
         with:
           commit_message: Deploy built site [skip ci]
           file_pattern: index.html 404.html assets/** .nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
