@@ -5,9 +5,11 @@ import AnalyzePage from './pages/AnalyzePage'
 import HistoryPage from './pages/HistoryPage'
 import DashboardPage from './pages/DashboardPage'
 
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '')
+
 function App() {
   return (
-    <Router>
+    <Router basename={basename || undefined}>
       <div className="min-h-screen bg-gray-50">
         <Navigation />
         <Routes>

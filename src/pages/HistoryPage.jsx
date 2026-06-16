@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 
 function HistoryPage() {
@@ -82,12 +83,12 @@ function HistoryPage() {
             <p className="text-gray-500 mb-6">
               Analyzed messages will appear here
             </p>
-            <a
-              href="/analyze"
+            <Link
+              to="/analyze"
               className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold"
             >
               Analyze a Message
-            </a>
+            </Link>
           </div>
         )}
 
