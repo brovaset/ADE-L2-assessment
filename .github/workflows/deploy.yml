@@ -6,16 +6,15 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
+    if: github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,17 +26,14 @@ jobs:
 
       - run: npm ci
       - run: npm run build
+      - run: |
+          cp dist/index.html index.html
+          cp dist/404.html 404.html
+          rm -rf assets
+          cp -r dist/assets assets
+          touch .nojekyll
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/deploy-pages@v4
-        id: deployment
+          commit_message: Deploy built site [skip ci]
+          file_pattern: index.html 404.html assets/** .nojekyll
